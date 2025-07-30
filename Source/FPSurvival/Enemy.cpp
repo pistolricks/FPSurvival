@@ -21,7 +21,7 @@ void AEnemy::BeginPlay()
 	
 	EnemyAIC = Cast<AAIController>(GetController());
 
-	SeekPlayer();	
+	SeekPlayer();
 }
 
 // Called every frame
