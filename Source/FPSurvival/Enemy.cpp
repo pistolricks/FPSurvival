@@ -37,6 +37,8 @@ void AEnemy::BeginPlay()
 
 	PlayerAttackCollisionDetection->OnComponentEndOverlap.AddDynamic(this,
 		&AEnemy::OnPlayerAttackOverlapEnd);
+
+	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnDealDamageOverlapBegin);
 	
 	SeekPlayer();
 }
@@ -94,6 +96,11 @@ void AEnemy::OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedCompo
 void AEnemy::OnDealDamageOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
 	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
+	if (PlayerREF && CanDealDamage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Damaged"));
+	}
 }
 
 void AEnemy::SeekPlayer()
