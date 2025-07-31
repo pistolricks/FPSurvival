@@ -2,9 +2,6 @@
 
 
 #include "Nemesis.h"
-
-#include <rapidjson/internal/meta.h>
-
 #include "FPSurvivalCharacter.h"
 #include "AIController.h"
 #include "Navigation/PathFollowingComponent.h"
