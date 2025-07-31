@@ -23,7 +23,10 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	EnemyAIC = Cast<AAIController>(GetController());
+	EnemyAIC->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMovedCompleted);
 
+	AnimInstance = GetMesh()->GetAnimInstance();
+	
 	PlayerAttackCollisionDetection->OnComponentBeginOverlap.AddDynamic(this,
 		&AEnemy::OnPlayerAttackOverlapBegin);
 
@@ -47,8 +50,17 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AEnemy::OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result)
+{
+	if (CanAttackPlayer)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SeekPlayerTH);
+		AnimInstance->Montage_Play(EnemyAttackAnimation);
+	}
+}
+
 void AEnemy::OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
-	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
 

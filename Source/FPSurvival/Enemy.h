@@ -37,9 +37,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* PlayerAttackCollisionDetection;
 	
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* EnemyAttackAnimation;
+
+	class UAnimInstance* AnimInstance;
 	
 	FTimerHandle SeekPlayerTH;
 
+	void OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result);
+	
 	UFUNCTION()
 	void OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComponent,
 		class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
