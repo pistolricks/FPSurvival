@@ -116,7 +116,11 @@ void AEnemy::SeekPlayer()
 {
 	GetWorld()->GetTimerManager().SetTimer(SeekPlayerTH, this, &AEnemy::SeekPlayer, 0.25f, true);
 
-	if (PlayerREF)
+	if (AnimInstance->Montage_IsPlaying(EnemyAttackAnimation))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Montage is still playing"));
+	}
+	else if (PlayerREF)
 	{
 		EnemyAIC->MoveToLocation(PlayerREF->GetActorLocation(), StoppingDistance, true);
 	}
