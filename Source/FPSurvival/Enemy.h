@@ -40,6 +40,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UAnimMontage* EnemyAttackAnimation;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool CanDealDamage;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* DamageCollision;
+	
+	
+	
 	class UAnimInstance* AnimInstance;
 	
 	FTimerHandle SeekPlayerTH;
@@ -55,6 +63,10 @@ public:
 	void OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComponent,
 		class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void OnDealDamageOverlapBegin(class UPrimitiveComponent* OverlappedComponent,
+		class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
 	
 	UFUNCTION()
 	void SeekPlayer();

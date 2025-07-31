@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -15,6 +17,9 @@ AEnemy::AEnemy()
 	PlayerAttackCollisionDetection =
 		CreateDefaultSubobject<USphereComponent>(TEXT("Player AttachCollision Detection"));
 	PlayerAttackCollisionDetection->SetupAttachment(RootComponent);
+
+	DamageCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Damage Collision"));
+	DamageCollision->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
 }
 
 // Called when the game starts or when spawned
@@ -84,6 +89,11 @@ void AEnemy::OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedCompo
 		
 		SeekPlayer();
 	}
+}
+
+void AEnemy::OnDealDamageOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
 }
 
 void AEnemy::SeekPlayer()
