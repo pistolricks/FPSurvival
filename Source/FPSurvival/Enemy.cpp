@@ -5,13 +5,16 @@
 #include "FPSurvivalCharacter.h"
 #include "AIController.h"
 #include "Navigation/PathFollowingComponent.h"
-
+#include "Components/SphereComponent.h"
 // Sets default values
 AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	PlayerAttackCollisionDetection =
+		CreateDefaultSubobject<USphereComponent>(TEXT("Player AttachCollision Detection"));
+	PlayerAttackCollisionDetection->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +24,12 @@ void AEnemy::BeginPlay()
 	
 	EnemyAIC = Cast<AAIController>(GetController());
 
+	PlayerAttackCollisionDetection->OnComponentBeginOverlap.AddDynamic(this,
+		&AEnemy::OnPlayerAttackOverlapBegin);
+
+	PlayerAttackCollisionDetection->OnComponentEndOverlap.AddDynamic(this,
+		&AEnemy::OnPlayerAttackOverlapEnd);
+	
 	SeekPlayer();
 }
 
@@ -36,6 +45,33 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemy::OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
+
+	if (PlayerREF)
+	{
+		CanAttackPlayer = true;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
+}
+
+void AEnemy::OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
+
+	if (PlayerREF)
+	{
+		CanAttackPlayer = false;
+
+		UE_LOG(LogTemp, Warning, TEXT("Overlap End"));
+		
+		SeekPlayer();
+	}
 }
 
 void AEnemy::SeekPlayer()

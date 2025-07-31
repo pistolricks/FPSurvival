@@ -26,13 +26,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	bool CanAttackPlayer;
+	
 	class AFPSurvivalCharacter* PlayerREF;
 	class AAIController* EnemyAIC;
 	
 	UPROPERTY(editAnywhere)
 	float StoppingDistance = 100.0f;
+
+	UPROPERTY(EditAnywhere)
+	class USphereComponent* PlayerAttackCollisionDetection;
+	
+	
 	FTimerHandle SeekPlayerTH;
 
+	UFUNCTION()
+	void OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComponent,
+		class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComponent,
+		class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 	UFUNCTION()
 	void SeekPlayer();
 };
