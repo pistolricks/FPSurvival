@@ -27,6 +27,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool CanAttackPlayer;
+	int health;
 
 	class AFPSurvivalCharacter* PlayerREF;
 	class AAIController* EnemyAIC;
@@ -50,6 +51,14 @@ public:
 	class UAnimInstance* AnimInstance;
 
 	FTimerHandle SeekPlayerTH;
+
+	virtual float TakeDamage
+	(
+		float Damage,
+		const struct FDamageEvent& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 
 	void OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result);
 

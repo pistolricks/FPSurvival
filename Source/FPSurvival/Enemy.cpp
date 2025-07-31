@@ -27,6 +27,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	health = 100;
 	EnemyAIC = Cast<AAIController>(GetController());
 	EnemyAIC->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMovedCompleted);
 
@@ -53,6 +54,18 @@ void AEnemy::Tick(float DeltaTime)
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+float AEnemy::TakeDamage(float Damage, const struct FDamageEvent& DamageEvent, AController* EventInstigator,
+                         AActor* DamageCauser)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Enemy Damaged"));
+	health -= Damage;
+	if (health <= 0)
+	{
+		Destroy();
+	}
+	return Damage;
 }
 
 void AEnemy::OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result)
