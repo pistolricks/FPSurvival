@@ -48,6 +48,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input")
 	class UInputAction* MouseLookAction;
 
+	int health;
+
 public:
 	AFPSurvivalCharacter();
 
@@ -76,6 +78,8 @@ protected:
 
 	/** Set up input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns the first person mesh **/

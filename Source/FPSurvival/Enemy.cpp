@@ -11,7 +11,7 @@
 // Sets default values
 AEnemy::AEnemy()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlayerAttackCollisionDetection =
@@ -26,20 +26,20 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	EnemyAIC = Cast<AAIController>(GetController());
 	EnemyAIC->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMovedCompleted);
 
 	AnimInstance = GetMesh()->GetAnimInstance();
-	
+
 	PlayerAttackCollisionDetection->OnComponentBeginOverlap.AddDynamic(this,
-		&AEnemy::OnPlayerAttackOverlapBegin);
+	                                                                   &AEnemy::OnPlayerAttackOverlapBegin);
 
 	PlayerAttackCollisionDetection->OnComponentEndOverlap.AddDynamic(this,
-		&AEnemy::OnPlayerAttackOverlapEnd);
+	                                                                 &AEnemy::OnPlayerAttackOverlapEnd);
 
 	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnDealDamageOverlapBegin);
-	
+
 	SeekPlayer();
 }
 
@@ -47,14 +47,12 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void AEnemy::OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result)
@@ -66,8 +64,17 @@ void AEnemy::OnAIMovedCompleted(struct FAIRequestID RequestID, const struct FPat
 	}
 }
 
+void AEnemy::AttackAnimationEnded()
+{
+	if (CanAttackPlayer)
+	{
+		AnimInstance->Montage_Play(EnemyAttackAnimation);
+	}
+}
+
 void AEnemy::OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
-                                        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                        const FHitResult& SweepResult)
 {
 	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
 
@@ -79,7 +86,7 @@ void AEnemy::OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedCom
 }
 
 void AEnemy::OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
-	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                                      class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
 
@@ -88,18 +95,20 @@ void AEnemy::OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedCompo
 		CanAttackPlayer = false;
 
 		UE_LOG(LogTemp, Warning, TEXT("Overlap End"));
-		
+
 		SeekPlayer();
 	}
 }
 
 void AEnemy::OnDealDamageOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
-	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                      class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                      const FHitResult& SweepResult)
 {
 	PlayerREF = Cast<AFPSurvivalCharacter>(OtherActor);
 	if (PlayerREF && CanDealDamage)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Damaged"));
+		PlayerREF->ModifyHealth(-25);
 	}
 }
 
@@ -109,7 +118,7 @@ void AEnemy::SeekPlayer()
 
 	if (PlayerREF)
 	{
-		EnemyAIC->MoveToLocation(PlayerREF->GetActorLocation(), StoppingDistance,true);
+		EnemyAIC->MoveToLocation(PlayerREF->GetActorLocation(), StoppingDistance, true);
 	}
 	else
 	{
@@ -117,4 +126,3 @@ void AEnemy::SeekPlayer()
 		SeekPlayer();
 	}
 }
-
