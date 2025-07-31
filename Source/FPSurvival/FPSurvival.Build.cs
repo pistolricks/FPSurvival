@@ -8,7 +8,8 @@ public class FPSurvival : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {
+		PublicDependencyModuleNames.AddRange(new[]
+		{
 			"Core",
 			"CoreUObject",
 			"Engine",
@@ -19,7 +20,7 @@ public class FPSurvival : ModuleRules
 			"GameplayStateTreeModule",
 			"UMG"
 		});
-
+/*
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		PublicIncludePaths.AddRange(new string[] {
@@ -28,7 +29,7 @@ public class FPSurvival : ModuleRules
 			"FPSurvival/Variant_Shooter",
 			"FPSurvival/Variant_Shooter/AI"
 		});
-
+*/
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
